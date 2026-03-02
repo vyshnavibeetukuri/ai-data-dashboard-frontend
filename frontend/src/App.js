@@ -10,14 +10,14 @@ function App() {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [darkMode, setDarkMode] = useState(false);
 
-    // Fetch backend data
+    // Fetch backend data on load
     useEffect(() => {
         axios.get('https://ai-data-dashboard-backend-2.onrender.com/data')
             .then(res => setData(res.data))
-            .catch(err => console.error(err));
+            .catch(err => console.error('Error fetching data:', err));
     }, []);
 
-    // File upload handler
+    // File upload handlers
     const handleFileChange = (e) => setSelectedFile(e.target.files[0]);
 
     const handleUpload = () => {
@@ -29,10 +29,10 @@ function App() {
             headers: { 'Content-Type': 'multipart/form-data' },
         })
             .then(res => setData(res.data))
-            .catch(err => console.error(err));
+            .catch(err => console.error('Upload error:', err));
     };
 
-    // Filter & search
+    // Filter and search
     const filteredData = data.filter(row =>
         Object.values(row).some(value =>
             String(value).toLowerCase().includes(searchText.toLowerCase())
@@ -55,7 +55,7 @@ function App() {
         setSortConfig({ key, direction });
     };
 
-    // Summary
+    // Summary cards
     const totalRows = data.length;
     const valueKey = data[0] ? Object.keys(data[0])[1] : null;
     const totalValue = valueKey ? data.reduce((sum, row) => sum + Number(row[valueKey]), 0) : 0;
@@ -63,6 +63,7 @@ function App() {
     return (
         <div className={darkMode ? 'dark bg-gray-900 text-white min-h-screen' : 'bg-white text-gray-900 min-h-screen'}>
             <div className="container mx-auto p-4">
+                {/* Header */}
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-2xl font-bold">AI Data Dashboard</h1>
                     <button
@@ -76,7 +77,9 @@ function App() {
                 {/* File Upload + CSV Export + Search */}
                 <div className="mb-4 flex flex-wrap gap-2">
                     <input type="file" accept=".csv" onChange={handleFileChange} />
-                    <button onClick={handleUpload} className="px-4 py-2 bg-blue-500 text-white rounded">Upload</button>
+                    <button onClick={handleUpload} className="px-4 py-2 bg-blue-500 text-white rounded">
+                        Upload
+                    </button>
                     <CSVLink data={data} filename={"export.csv"} className="px-4 py-2 bg-green-500 text-white rounded">
                         Export CSV
                     </CSVLink>
@@ -101,7 +104,7 @@ function App() {
                     </div>
                 </div>
 
-                {/* Table */}
+                {/* Data Table */}
                 <table className="min-w-full border mb-6">
                     <thead>
                         <tr className="bg-gray-200 dark:bg-gray-700">
