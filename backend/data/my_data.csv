@@ -7,9 +7,5 @@ import pandas as pd
 
 app = FastAPI()  # create FastAPI app
 
-# Endpoint to return CSV data
-@app.get("/data")
-def get_data():
-    df = pd.read_csv("data/my_data.csv")  # path relative to server.py
-    return df.to_dict(orient="records")  # convert DataFrame to list of dicts
+
     
